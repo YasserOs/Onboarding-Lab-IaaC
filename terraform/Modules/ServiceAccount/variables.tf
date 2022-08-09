@@ -17,6 +17,5 @@ variable "role" {
 }
 
 variable "member" {
-    type = string
-  
+    type = string  
 }

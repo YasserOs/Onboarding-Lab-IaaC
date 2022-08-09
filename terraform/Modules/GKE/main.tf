@@ -8,15 +8,15 @@ resource "google_container_cluster" "GKE" {
   subnetwork               = var.subnet-selflink
 
   node_locations = var.cluster_zones
-    master_authorized_networks_config {
-        
-        cidr_blocks{
-            cidr_block = var.authorized-cidr-range
-            display_name = "authorized"
-        }
+  master_authorized_networks_config {
+      
+      cidr_blocks{
+          cidr_block = var.authorized-cidr-range
+          display_name = "authorized"
+      }
 
-    }
-    ip_allocation_policy {
+  }
+  ip_allocation_policy {
   }
 
   private_cluster_config {

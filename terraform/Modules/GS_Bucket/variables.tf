@@ -9,6 +9,15 @@ variable "storage_class" {
   default = "STANDARD"
 }
 
+variable "bucket-role" {
+  type = string
+  default = "roles/storage.objectViewer"
+}
+
+variable "authorized-members" {
+  type = list
+  default = ["allAuthenticatedUsers"]
+}
 variable "location" {
   description = "The gcs bucket class "
   type        = string

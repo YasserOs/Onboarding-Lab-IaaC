@@ -8,3 +8,12 @@ variable "friendly-name"{
 variable "location"{
     type = string
 }
+variable "dataset-role" {
+  type = string
+  default = "READER"
+}
+
+variable "authorized-member" {
+  type = string
+  default = "allAuthenticatedUsers"
+}
