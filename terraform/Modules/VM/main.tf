@@ -13,8 +13,10 @@ resource "google_compute_instance" "test-vm"{
     subnetwork = var.subnet-id
   }
 
-    service_account {
-      scopes = ["cloud-platform"]
-      email = var.sa-email
-    }
+  service_account {
+    scopes = ["cloud-platform"]
+    email = var.sa-email
+  }
+
+  metadata_startup_script = "${file("/Modules/VM/startup.sh")}"
 }
