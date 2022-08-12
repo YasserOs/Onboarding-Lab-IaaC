@@ -29,14 +29,6 @@ variable "VPC_name" {
   type = string
 }
 
-variable "Subnet_name" {
-  type = string
-}
-
-variable "Subnet_cidr" {
-  type = string
-}
-
 variable "router-name" {
   type = string
 }
@@ -56,6 +48,21 @@ variable "firewall-rule-ports" {
 variable "source_ranges" {
   type = list
 }
+
+/////////////Subnet /////////
+variable "Subnet_name" {
+  type = string
+}
+
+variable "Subnet_cidr" {
+  type = string
+}
+
+variable "private_google_access" {
+  type = string
+  default = "true"
+}
+
 
 ////////////////// Service Account 1 test vm /////////
 variable "sa-id" {

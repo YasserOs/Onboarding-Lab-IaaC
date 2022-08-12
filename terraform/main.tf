@@ -1,5 +1,8 @@
 module "GS_Bucket_1" {
     source = "./Modules/GS_Bucket"
+    depends_on = [
+      module.ServiceAccount-1-testVm
+    ]
     bucket_name = "${var.project_}-${var.bucket_name}-1"
     location = var.location
     storage_class = var.storage_class
@@ -7,6 +10,7 @@ module "GS_Bucket_1" {
     authorized-members = ["serviceAccount:${module.ServiceAccount-1-testVm.sa-email}"]
 
 }
+
 module "GS_Bucket_2" {
     source = "./Modules/GS_Bucket"
     bucket_name = "${var.project_}-${var.bucket_name}-2"
@@ -14,8 +18,8 @@ module "GS_Bucket_2" {
     storage_class = var.storage_class
     bucket-role = var.bucket_access_role
     authorized-members = ["serviceAccount:${module.ServiceAccount-1-testVm.sa-email}"]
-
 }
+
 module "GS_Bucket_3" {
     source = "./Modules/GS_Bucket"
     bucket_name = "${var.project_}-${var.bucket_name}-3"
@@ -29,18 +33,22 @@ module "GS_Bucket_3" {
 module "Network" {
     source = "./Modules/Networking"
     VPC_name = var.VPC_name
+}
+module "Subnet"{
+    source = "./Modules/Subnet"
     Subnet_name = var.Subnet_name
     Subnet_cidr = var.Subnet_cidr
     Subnet_region = var.region
-
+    private_google_access = var.private_google_access
+    network-id = "${module.Network.vpc_id}"
 }
-module "Nat" {
-    source = "./Modules/Nat"
-    router-name = var.router-name
-    router-region = "${module.Network.subnet-region}"
-    router-network = "${module.Network.vpc_id}"
-    subnet-id = "${module.Network.subnet-id}"
-}
+# module "Nat" {
+#     source = "./Modules/Nat"
+#     router-name = var.router-name
+#     router-region = "${module.Network.subnet-region}"
+#     router-network = "${module.Network.vpc_id}"
+#     subnet-id = "${module.Network.subnet-id}"
+# }
 module "Firewall" {
         source = "./Modules/Firewalls"
         depends_on = [module.Network]
@@ -75,13 +83,13 @@ module "VM" {
     Zone = var.Zone
     OS_image = var.OS_image
     sa-email= "${module.ServiceAccount-1-testVm.sa-email}"
-    subnet-id = "${module.Network.subnet-id}"
+    subnet-id = "${module.Subnet.subnet-id}"
 }
 
 
 
 module "GKE"{
-    source = "./Modules/GKE"
+    source = "./Modules/GKE" 
     project = var.project_
     cluster_name = var.cluster_name
     node-pool-name = var.node_pool_name
@@ -93,7 +101,7 @@ module "GKE"{
     disk-size = var.gke_disk_size
     os-image = var.gke_os_image
     vpc-selflink = "${module.Network.vpc-selflink}"
-    subnet-selflink = "${module.Network.subnet-selflink}"
+    subnet-selflink = "${module.Subnet.subnet-selflink}"
     sa = "${module.ServiceAccount-2-gcr.sa-email}"
     authorized-cidr-range = "${module.VM.instance-ip}/32"
 }
